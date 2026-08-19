@@ -24,7 +24,7 @@ def listar_arquivos_raw():
 
 
 def carregar_dados(chaves):
-    """Baixa e junta todos os JSONs num único DataFrame."""
+    #Baixa e junta todos os JSONs num único DataFrame.
     todas_linhas = []
 
     for chave in chaves:
@@ -39,18 +39,18 @@ def carregar_dados(chaves):
     df = pd.DataFrame(todas_linhas)
     df["data"] = pd.to_datetime(df["data"])
 
-    # Remove duplicatas (caso a Lambda tenha rodado mais de uma vez no mesmo dia)
+    #Remove duplicatas (caso a Lambda tenha rodado mais de uma vez no mesmo dia)
     df = df.drop_duplicates(subset=["ticker", "data"])
 
     return df
 
 
 def calcular_metricas(df):
-    """Calcula variação diária, média móvel e volatilidade por ativo."""
+    #Calcula variação diária, média móvel e volatilidade por ativo.
     df = df.sort_values(["ticker", "data"])
 
-    # groupby + transform aplica o cálculo separadamente para cada ticker,
-    # sem misturar dados de ativos diferentes
+    #groupby + transform aplica o cálculo separadamente para cada ticker,
+    #sem misturar dados de ativos diferentes
     df["variacao_diaria_pct"] = df.groupby("ticker")["fechamento"].pct_change() * 100
 
     df["media_movel_5d"] = (
@@ -63,12 +63,23 @@ def calcular_metricas(df):
         .transform(lambda x: x.rolling(window=5, min_periods=1).std())
     )
 
+    #Arredonda as métricas calculadas para 2 casas decimais -- os preços
+    #originais (abertura, fechamento, etc.) já vêm limpos do yfinance
+    df["variacao_diaria_pct"] = df["variacao_diaria_pct"].round(2)
+    df["media_movel_5d"] = df["media_movel_5d"].round(2)
+    df["volatilidade_5d"] = df["volatilidade_5d"].round(2)
+
     return df
 
 
 def salvar_processado(df):
     """Salva o DataFrame em Parquet no S3, particionado por ticker."""
     for ticker, grupo in df.groupby("ticker"):
+        #Remove a coluna "ticker" antes de salvar -- ela já fica implícita
+        #no caminho da partição (ticker=XXXX/), então mantê-la dentro do
+        #arquivo também causaria conflito de coluna duplicada no Athena.
+        grupo = grupo.drop(columns=["ticker"])
+
         buffer = BytesIO()
         grupo.to_parquet(buffer, index=False, engine="pyarrow")
         buffer.seek(0)
