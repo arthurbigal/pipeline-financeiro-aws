@@ -7,7 +7,7 @@ Pipeline de dados de ponta a ponta que coleta preços históricos de ações (Br
 ```mermaid
 flowchart TD
     A[yfinance API] -->|Python + boto3| B[AWS Lambda]
-    B -->|Execução diária automática| C[Amazon EventBridge]
+    C[Amazon EventBridge] -->|Dispara diariamente| B
     B -->|Dados brutos JSON| D[(S3 - raw/)]
     D -->|ETL: limpeza e métricas| E[AWS Glue Job]
     E -->|Dados processados Parquet| F[(S3 - processed/)]
@@ -47,6 +47,8 @@ Este projeto simula um pipeline de dados real de mercado financeiro, cobrindo o 
 #Dashboard
 
 ![Gráfico de preços](assets/dashboard-grafico-precos.png) ![Ranking de ativos](assets/dashboard-ranking.png)
+
+
 
 #Como rodar localmente
 
