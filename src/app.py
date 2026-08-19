@@ -8,11 +8,24 @@ PROCESSED_PATH = f"s3://{BUCKET_NAME}/processed/"
 # Configuração da página -- precisa ser a primeira chamada do Streamlit
 st.set_page_config(page_title="Pipeline Financeiro AWS", layout="wide")
 
+# ---- Credenciais AWS ----
+# Localmente, o boto3/pandas usam as credenciais do "aws configure" automaticamente.
+# No Streamlit Cloud, não existe esse arquivo local -- por isso, se as credenciais
+# estiverem cadastradas em st.secrets (configurado no site do Streamlit Cloud,
+# nunca no código), nós montamos um dicionário para passar explicitamente ao
+# pandas na hora de ler o S3.
+storage_options = {}
+if "aws" in st.secrets:
+    storage_options = {
+        "key": st.secrets["aws"]["access_key_id"],
+        "secret": st.secrets["aws"]["secret_access_key"],
+    }
+
 
 @st.cache_data(ttl=3600)  # guarda o resultado em cache por 1h, evita reler o S3 toda hora
 def carregar_dados():
     """Lê todos os arquivos Parquet particionados por ticker no S3."""
-    df = pd.read_parquet(PROCESSED_PATH)
+    df = pd.read_parquet(PROCESSED_PATH, storage_options=storage_options)
     df["data"] = pd.to_datetime(df["data"])
     return df
 
