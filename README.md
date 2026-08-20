@@ -46,7 +46,7 @@ Este projeto simula um pipeline de dados real de mercado financeiro, cobrindo o 
 
 #Dashboard
 
-![Gráfico de preços](assetsdashboard-grafico-precos.png) ![Ranking de ativos](assetsdashboard-ranking.png)
+![Gráfico de preços](assets/dashboard-grafico-precos.png) ![Ranking de ativos](assets/dashboard-ranking.png)
 
 
 
