@@ -46,6 +46,8 @@ Este projeto simula um pipeline de dados real de mercado financeiro, cobrindo o 
 
 #Dashboard
 
+**[Acesse o dashboard ao vivo](https://pipeline-financeiro-aws-bs7lozfgtkdrgqyghy5fzx.streamlit.app/)**
+
 ![Gráfico de preços](assets/dashboard-grafico-precos.png) ![Ranking de ativos](assets/dashboard-ranking.png)
 
 
