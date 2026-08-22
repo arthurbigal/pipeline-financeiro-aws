@@ -48,6 +48,8 @@ Este projeto simula um pipeline de dados real de mercado financeiro, cobrindo o 
 
 **[Acesse o dashboard ao vivo](https://pipeline-financeiro-aws-bs7lozfgtkdrgqyghy5fzx.streamlit.app/)**
 
+*O app roda no plano gratuito do Streamlit Community Cloud e pode "dormir" após alguns dias sem acessos. Se aparecer uma tela de inatividade, basta clicar em "Yes, get this app back up!" — leva menos de 1 minuto para reativar.*
+
 ![Gráfico de preços](assets/dashboard-grafico-precos.png) ![Ranking de ativos](assets/dashboard-ranking.png)
 
 
